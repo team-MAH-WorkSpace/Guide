@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(cd /Users/yjc/Workspace/team-MAH/guide/images && \\\\\ncurl -sL -o step1_02_name.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FvfbgOhZw4GilbtJfB64m%2Fg1.png?alt=media\" && \\\\\ncurl -sL -o step1_05_password.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FAPwpV0upsydJzbTV7PU1%2Fg4.png?alt=media\" && \\\\\ncurl -sL -o step1_06_phone.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FW4rS004X8FZewF8E0UAr%2Fg5.png?alt=media\" && \\\\\ncurl -sL -o step1_07_recovery_email.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FCT0SRqvwjP6OuXIxrzrY%2Fg6.png?alt=media\" && \\\\\ncurl -sL -o step1_08_review.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FwlBeZfggZcOM6NjG0mVI%2Fg7.png?alt=media\" && \\\\\ncurl -sL -o step2_05_duns.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FhBfqOmyanyBI57kofSiQ%2Fplay5.PNG?alt=media\" && \\\\\ncurl -sL -o step2_06_address.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FM3v87MRZXrrIwxNymkhb%2Fplay6.PNG?alt=media\" && \\\\\ncurl -sL -o step2_08_org_verify.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FpMS6wVzhiPYfGbaXrRgN%2Fplay8.PNG?alt=media\" && \\\\\ncurl -sL -o step2_09_org_details.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2Fo7rEz0hWtUG9e456Rmar%2Fplay9.PNG?alt=media\" && \\\\\ncurl -sL -o step2_12_contact.png \"https://684031119-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FmsJj00k8mj8AcVpnn9Xs%2Fuploads%2FowDar2A6zhHK8YBvVb52%2Fplay12.PNG?alt=media\" && \\\\\necho \"All 10 images restored\")",
-      "WebFetch(domain:documentation.swing2app.co.kr)"
+      "WebFetch(domain:documentation.swing2app.co.kr)",
+      "Bash(git commit:*)",
+      "WebFetch(domain:blog.naver.com)",
+      "WebFetch(domain:m.blog.naver.com)",
+      "Read(//private/tmp/**)",
+      "Bash(curl -sL -o /tmp/naver_post.html -H \"User-Agent: Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/120.0.0.0 Safari/537.36\" \"https://blog.naver.com/PostView.naver?blogId=swing2app&logNo=223285873006&redirect=Dlog&widgetTypeCall=true&noTrackingCode=true&directAccess=false\")",
+      "Read(//tmp/**)"
     ]
   }
 }
