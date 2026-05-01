@@ -31,3 +31,4 @@
 - 초대 아이디: didwndckd@gmail.com
 
 - [애플 개발자 계정 초대 방법](https://developer.apple.com/kr/help/account/access/invite-team-members/)
+  - [애플 개발자 초대 후 계정 권한 확인 방법](https://github.com/team-MAH-WorkSpace/Guide/blob/main/apple-developer-invite-confirm.md)
