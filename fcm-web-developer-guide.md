@@ -7,26 +7,27 @@ iOS 네이티브 앱(WebView 기반)에서 웹페이지로 FCM 토큰과 푸시 
 ## 1. FCM 토큰 사용 방법
 
 ### 전달 방식
-앱이 웹뷰 **최초 진입 페이지를 로드할 때** HTTP Request Header에 FCM 토큰을 담아 전달합니다.
+페이지 로드가 완료되고 FCM 토큰이 발급되면, 앱이 웹뷰에서 전역 JavaScript 함수 `fcmToken`을 호출해 토큰을 전달합니다.
 
-### Header 정보
-| Key | Value |
-|---|---|
-| `fcmToken` | FCM 등록 토큰 문자열 |
+### 웹에서 구현해야 할 함수
 
-### 사용 예시 (서버 사이드)
-서버에서 최초 요청을 받을 때 Header에서 `fcmToken`을 읽어 사용자 정보와 함께 저장/갱신하면 됩니다.
+전역 스코프에 아래 함수를 정의해 두면 앱이 토큰 수신 시점에 호출합니다.
 
-```http
-GET / HTTP/1.1
-Host: example.com
-fcmToken: dXxXxXxXxXxXx:APA91b...........
-...
+```javascript
+function fcmToken(token) {
+    // token은 FCM 등록 토큰 문자열입니다.
+    // 서버로 전송해 사용자 정보와 함께 저장/갱신하세요.
+}
 ```
 
+### 파라미터 형식
+- 인자(`token`)는 **FCM 등록 토큰 문자열**입니다.
+- 받은 토큰은 웹에서 직접 서버로 전송해 사용자별로 저장/갱신하면 됩니다. (앱은 서버로 직접 보내지 않습니다.)
+
 ### 주의 사항
-- FCM 토큰은 **최초 페이지 로드 시점**에만 Header에 포함됩니다. 이후 SPA 내부 라우팅이나 동일 도메인 재요청에는 포함되지 않습니다.
-- FCM 토큰 발급에 실패한 경우(권한 거부 등) Header가 **누락될 수 있습니다**. 서버에서는 Header가 없는 케이스도 정상 처리해야 합니다.
+- `fcmToken` 함수는 **반드시 전역(window)에 등록**되어 있어야 합니다. 모듈 스코프 안에 있으면 앱에서 호출할 수 없습니다.
+- 앱은 **페이지 로드 완료 + 토큰 수신이 모두 충족된 뒤** 호출하므로, 함수가 가능한 한 빠른 시점에 등록되도록 해주세요.
+- FCM 토큰 발급에 실패한 경우(권한 거부 등) `fcmToken`이 **호출되지 않을 수 있습니다**. 토큰이 없는 케이스도 정상 처리해야 합니다.
 - FCM 토큰은 디바이스/앱 재설치/일정 주기 등에 따라 **갱신**될 수 있으므로, 갱신된 토큰이 들어오면 기존 토큰을 덮어쓰는 방식으로 관리해 주세요.
 
 ### 토큰 만료 / 갱신 정책
@@ -66,15 +67,17 @@ fcmToken: dXxXxXxXxXxXx:APA91b...........
 전역 스코프에 아래와 같은 형태의 함수를 정의해 두면 앱이 푸시 탭 시점에 호출합니다.
 
 ```javascript
-function receivePush(pushDataString) {
-    // pushDataString은 JSON 문자열입니다.
-    const pushData = JSON.parse(pushDataString);
+function receivePush(pushData) {
+    // pushData는 푸시 페이로드(JSON)입니다.
+    // 전달 형태는 console.log로 한 번 확인한 뒤 그에 맞게 처리하세요.
     // ... 라우팅, 알림 노출 등 처리
 }
 ```
 
 ### 파라미터 형식
-- 인자(`pushDataString`)는 **JSON 문자열**입니다. 사용 전 `JSON.parse`로 파싱해서 사용하세요.
+- 인자(`pushData`)는 앱이 전달하는 **푸시 페이로드(JSON)** 입니다.
+- 전달되는 형태(객체/문자열 등)는 플랫폼·구현에 따라 다를 수 있으니, 받은 값을 `console.log` / `typeof`로 **직접 확인한 뒤 처리**하세요. (이미 객체면 키에 바로 접근, 문자열이면 `JSON.parse` 후 사용)
+- 키 이름에 점(`.`)이 포함된 경우(예: `gcm.message_id`, `google.c.fid`)는 중첩 객체가 아니라 **키 이름 자체**이므로 대괄호 표기로 접근하세요: `pushData["gcm.message_id"]`.
 - 앱은 **APNs/FCM에서 받은 페이로드를 가공 없이 그대로 전달**합니다. 어떤 키를 어떻게 활용할지는 웹 측에서 자유롭게 결정하면 됩니다.
 - 페이로드 스키마(키 이름, 구조 등)는 **푸시 발송 측(서버)과 웹이 직접 합의**해 주세요. 앱은 관여하지 않습니다.
 
@@ -136,7 +139,7 @@ FCM HTTP v1 API 기준 예시입니다. `data` 필드에 웹에서 사용할 커
 ```
 
 #### iOS에서 웹이 받는 형태 (`receivePush`)
-APNs `userInfo`가 그대로 JSON 문자열로 전달됩니다. 발송 시 `data`에 담은 키들은 **최상위에 평탄화(flatten)** 되어 들어옵니다.
+APNs `userInfo`가 그대로(JSON) 전달됩니다. 발송 시 `data`에 담은 키들은 **최상위에 평탄화(flatten)** 되어 들어옵니다. 아래와 같은 구조입니다.
 
 ```json
 {
@@ -192,11 +195,11 @@ FCM HTTP v1 API 기준 제약사항입니다.
 
 ## 3. 요약 체크리스트
 
-- [ ] 서버에서 최초 요청 Header의 `fcmToken` 읽기
-- [ ] FCM 토큰 갱신 처리(있으면 덮어쓰기)
+- [ ] `window.fcmToken(token)` 전역 함수 등록
+- [ ] 받은 토큰을 서버로 전송해 저장 (FCM 토큰 갱신 시 덮어쓰기)
 - [ ] 토큰 저장 시 갱신 timestamp 함께 관리 (stale 토큰 정리용, 권장 2개월)
-- [ ] `window.receivePush(pushDataString)` 전역 함수 등록
-- [ ] `JSON.parse`로 파싱 후 처리 로직 연결
+- [ ] `window.receivePush(pushData)` 전역 함수 등록
+- [ ] 받은 값 형태 확인 후 처리 (`console.log` / `typeof`)
 
 ---
 
